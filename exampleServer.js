@@ -3,6 +3,7 @@ var http = require('http'),
 	formidable= require('formidable'),
 	fs= require('fs'),
 	util=require('util');
+    _=require('underscore');
 
 var router = new director.http.Router();
 
@@ -24,7 +25,7 @@ router.get('/', {stream:true},function () {
 	var resource=this;
 	fs.readFile("formPage.html", "utf8", function(err,html)
 	{
-		 resource.res.writeHead(200, { 'Content-Type': 'text/html' })
+		 resource.res.writeHead(200, { 'Content-Type': 'text/html' });
 		resource.res.write(html);
 		resource.res.end();
 	});
@@ -39,8 +40,9 @@ router.post('/saveFile', {stream:true}, function()
 
 			form.parse(thisPage.req, function(err, fields, files)
 			{
-                for(var uploadFileKey in files)
-                    uploadFile(files[uploadFileKey]);
+                 _.select(files, function(upload){uploadFile(upload)});
+             //   for(var uploadFileKey in files)
+              //      uploadFile(files[uploadFileKey]);
 
 				thisPage.res.writeHead(200, {'content-type': 'text/plain'});
 				thisPage.res.write('received upload:\n\n');
