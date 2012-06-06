@@ -2,8 +2,9 @@ var http = require('http'),
     director = require('director'),
 	formidable= require('formidable'),
 	fs= require('fs'),
-	util=require('util');
-    _=require('underscore');
+	util=require('util'),
+    _=require('underscore'),
+    uuid=require('node-uuid')
 
 
 var uploadDir="./uploads/";
@@ -61,8 +62,8 @@ router.post('/saveFile', {stream:true}, function()
 			form.parse(thisPage.req, function(err, fields, files)
 			{
                  _.select(files, function(upload){uploadFile(upload)});
-             //   for(var uploadFileKey in files)
-              //      uploadFile(files[uploadFileKey]);
+                //for(var uploadFileKey in files)
+                    //uploadFile(files[uploadFileKey]);
 
 				thisPage.res.writeHead(200, {'content-type': 'text/plain'});
 				thisPage.res.write('received upload:\n\n');
@@ -70,14 +71,28 @@ router.post('/saveFile', {stream:true}, function()
 			});
 
             function uploadFile(upload)
-            {
-
+             {
+                 var storeName= uuid.v1();
                 console.log(upload.name);
-                fs.rename(upload.path, uploadDir+upload.name, function (err)
+                fs.rename(upload.path, uploadDir+storeName, function (err)
                 {
                     thisPage.res.writeHead(200, {'content-type': 'text/plain'});
                     thisPage.res.write('nope');thisPage.res.end()
                 });
+                //TODO: write with streams
+                 var metaInfo="[\n";
+                 metaInfo+= "[\"filepath\"," + "\""+uploadDir+upload.name+"\"],\n";
+                 metaInfo+= "[\"contenttype\","+ "\""+upload.type+"\"],\n";
+                 metaInfo+= "[\"length\","+"\""+upload.size+"\"],\n";
+                 metaInfo+= "[\"key\","+"\""+storeName+"\"],\n";
+                 metaInfo+= "[\"temppath\","+"\""+uploadDir+storeName+"\"]\n]";
+                fs.writeFile(uploadDir+storeName+".meta",metaInfo,function(err)
+                {
+                    if(err)
+                    {
+                        console.log(err);
+                    }
+                })
             }
 
 		
