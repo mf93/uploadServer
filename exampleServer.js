@@ -21,7 +21,45 @@ var server = http.createServer(function (req, res) {
   });
 });
 
-router.get('/', {stream:true},function () {
+
+router.get('*\.js', {stream:true},function(jsURL)
+{
+    var thisPage=this;
+    directToPage(jsURL,".js",thisPage);
+    console.log("ok");
+});
+router.get('*\.css', {stream:true},function(jsURL)
+{
+    var thisPage=this;
+    directToPage(jsURL,".css",thisPage);
+    console.log("ok");
+});
+router.get('*\.html', {stream:true},function(jsURL)
+{
+    var thisPage=this;
+    directToPage(jsURL,".html",thisPage);
+    console.log("ok");
+});
+
+function directToPage(pageURL,extension,thisPage)
+{
+    fs.readFile(pageURL + extension,"utf8", function(err,html)
+    {
+        if(err)
+        {
+            thisPage.res.writeHead(404);
+            thisPage.res.write("404 not found "+extension);
+            thisPage.res.end();
+        }
+        else
+        {
+            thisPage.res.write(html);
+            thisPage.res.end();
+        }
+    });
+}
+
+router.get('/form.html', {stream:true},function () {
 	var resource=this;
 	fs.readFile("formPage.html", "utf8", function(err,html)
 	{
@@ -30,6 +68,16 @@ router.get('/', {stream:true},function () {
 		resource.res.end();
 	});
  
+});
+router.get('/style.css', {stream:true},function () {
+    var resource=this;
+    fs.readFile("style.css", "utf8", function(err,html)
+    {
+        //resource.res.writeHead(200, { 'Content-Type': 'text/html' });
+        resource.res.write(html);
+        resource.res.end();
+    });
+
 });
 
 router.post('/saveFile', {stream:true}, function() 
