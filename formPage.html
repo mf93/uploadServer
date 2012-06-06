@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="/twitter-bootstrap/twitter-bootstrap-v2/docs/assets/css/bootstrap.css">
 </head>
 <body>
-<form name="input" action="/saveFile" method="post" enctype="multipart/form-data">
-upload your file here: <input type="file" name="file" />
-and the second one: <input type="file" name="file2" />
-<br/>
-<input type="submit" value="submit"/>
-<br /><br />
-</form> 
+<form class="well" name=input>
+    <label>File upload</label><br>
+    <input type="file" class="span3" placeholder="upload here" name="file">
+    <br>
+    <label class="checkbox">
+        <input type="checkbox"> upload a second file
+    </label>
+    <br>
+    <input type="file" class="span3" placeholder="upload here" name="file2">
+    <br>
+    <button type="submit" class="btn">Submit</button>
+</form>
+
 </body>
 </html>  
 

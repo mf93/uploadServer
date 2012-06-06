@@ -54,7 +54,7 @@ router.get('*\\.css', {stream:true},function(jsURL)
     directToPage(jsURL,".css",thisPage);
     console.log("ok");
 });
-router.get(/.*\.(html|php)/, {stream:true},function(jsURL)
+router.get(/.*\.html/, {stream:true},function(jsURL)
 {
     var thisPage=this;
     directToPage(jsURL,".html",thisPage);
