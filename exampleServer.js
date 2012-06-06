@@ -22,53 +22,7 @@ var server = http.createServer(function (req, res) {
 });
 
 
-router.get('*\.js', {stream:true},function(jsURL)
-{
-    var thisPage=this;
-    directToPage(jsURL,".js",thisPage);
-    console.log("ok");
-});
-router.get('*\.css', {stream:true},function(jsURL)
-{
-    var thisPage=this;
-    directToPage(jsURL,".css",thisPage);
-    console.log("ok");
-});
-router.get('*\.html', {stream:true},function(jsURL)
-{
-    var thisPage=this;
-    directToPage(jsURL,".html",thisPage);
-    console.log("ok");
-});
 
-function directToPage(pageURL,extension,thisPage)
-{
-    fs.readFile(pageURL + extension,"utf8", function(err,html)
-    {
-        if(err)
-        {
-            thisPage.res.writeHead(404);
-            thisPage.res.write("404 not found "+extension);
-            thisPage.res.end();
-        }
-        else
-        {
-            thisPage.res.write(html);
-            thisPage.res.end();
-        }
-    });
-}
-
-router.get('/form.html', {stream:true},function () {
-	var resource=this;
-	fs.readFile("formPage.html", "utf8", function(err,html)
-	{
-		 resource.res.writeHead(200, { 'Content-Type': 'text/html' });
-		resource.res.write(html);
-		resource.res.end();
-	});
- 
-});
 router.get('/style.css', {stream:true},function () {
     var resource=this;
     fs.readFile("style.css", "utf8", function(err,html)
@@ -79,6 +33,34 @@ router.get('/style.css', {stream:true},function () {
     });
 
 });
+router.get('/form.html', {stream:true},function () {
+    var resource=this;
+    fs.readFile("formPage.html", "utf8", function(err,html)
+    {
+        resource.res.writeHead(200, { 'Content-Type': 'text/html' });
+        resource.res.write(html);
+        resource.res.end();
+    });
+});
+    router.get('*\\.js', {stream:true},function(jsURL)
+{
+    var thisPage=this;
+    directToPage(jsURL,".js",thisPage);
+    console.log("ok");
+});
+router.get('*\\.css', {stream:true},function(jsURL)
+{
+    var thisPage=this;
+    directToPage(jsURL,".css",thisPage);
+    console.log("ok");
+});
+router.get(/.*\.(html|php)/, {stream:true},function(jsURL)
+{
+    var thisPage=this;
+    directToPage(jsURL,".html",thisPage);
+    console.log("ok");
+});
+
 
 router.post('/saveFile', {stream:true}, function() 
 	{
@@ -111,6 +93,23 @@ router.post('/saveFile', {stream:true}, function()
 		
 	});
 
+function directToPage(pageURL,extension,thisPage)
+{
+    fs.readFile(pageURL + extension,"utf8", function(err,html)
+    {
+        if(err)
+        {
+            thisPage.res.writeHead(404);
+            thisPage.res.write("404 not found "+extension);
+            thisPage.res.end();
+        }
+        else
+        {
+            thisPage.res.write(html);
+            thisPage.res.end();
+        }
+    });
+}
 
 server.listen(8080);
 console.log('http server with director running on 8080');
