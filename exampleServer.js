@@ -5,8 +5,9 @@ var http = require('http'),
 	util=require('util');
     _=require('underscore');
 
-var router = new director.http.Router();
 
+var uploadDir="./uploads/";
+var router = new director.http.Router();
 var server = http.createServer(function (req, res) {
   
 
@@ -21,19 +22,7 @@ var server = http.createServer(function (req, res) {
   });
 });
 
-
-
-router.get('/style.css', {stream:true},function () {
-    var resource=this;
-    fs.readFile("style.css", "utf8", function(err,html)
-    {
-        //resource.res.writeHead(200, { 'Content-Type': 'text/html' });
-        resource.res.write(html);
-        resource.res.end();
-    });
-
-});
-router.get('/form.html', {stream:true},function () {
+router.get('/', {stream:true},function () {
     var resource=this;
     fs.readFile("formPage.html", "utf8", function(err,html)
     {
@@ -54,9 +43,10 @@ router.get('*\\.css', {stream:true},function(jsURL)
     directToPage(jsURL,".css",thisPage);
     console.log("ok");
 });
-router.get(/.*\.html/, {stream:true},function(jsURL)
+router.get('*\\.html/', {stream:true},function(jsURL)
 {
     var thisPage=this;
+    console.log(jsURL);
     directToPage(jsURL,".html",thisPage);
     console.log("ok");
 });
@@ -83,7 +73,7 @@ router.post('/saveFile', {stream:true}, function()
             {
 
                 console.log(upload.name);
-                fs.rename(upload.path, "./"+upload.name, function (err)
+                fs.rename(upload.path, uploadDir+upload.name, function (err)
                 {
                     thisPage.res.writeHead(200, {'content-type': 'text/plain'});
                     thisPage.res.write('nope');thisPage.res.end()
